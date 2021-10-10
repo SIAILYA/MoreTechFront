@@ -1,0 +1,95 @@
+@import url('https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400;500;600&display=swap');
+* {
+  transition: all .3s ease;
+  color: var(--text-color)
+}
+
+html{
+  --background: #332E4C;
+  --background-light: #46496A;
+  --text-color: #fff;
+  --accent-color: #ffd155;
+  --accent-light: rgba(255, 209, 85, .25);
+}
+
+html[theme="light"]{
+  --background: #d9d9d9;
+  --background-light: #FFF;
+  --text-color: #141414;
+  --accent-color: #ff9a34;
+  --accent-light: rgba(255, 154, 52, .25);
+  .light-shadow{
+    box-shadow: 0px 0px 14px rgba(0, 0, 0, 0.25);
+  }
+}
+
+html[theme="dark"]{
+  --background: #2D2D2D;
+  --background-light: #4D4D4D;
+  --text-color: #fff;
+  --accent-color: #008ac4;
+  --accent-light: rgba(0, 138, 196, .25);
+}
+
+html, body{
+  background: var(--background-light);
+  font-family: 'Open Sans', sans-serif;
+}
+
+@function HexToRGB($hex) {
+  @return red($hex), green($hex), blue($hex);
+}
+
+$text-color: var(--text-color);
+
+.cursor-pointer{
+  cursor: pointer;
+}
+
+.fade-enter-active, .fade-leave-active {
+  transition: opacity .5s ease
+}
+.fade-enter, .fade-leave-active {
+  opacity: 0;
+}
+.child-view {
+  position: absolute;
+  transition: all .3s cubic-bezier(.55,0,.1,1);
+}
+
+a{
+  color: var(--text-color)!important;
+  text-decoration: underline!important;
+}
+
+a:hover{
+  color: currentColor;
+  opacity: 0.9;
+}
+
+.vs--searchable .vs__dropdown-toggle {
+  background: var(--background);
+}
+
+.vs--single .vs__selected{
+  color: var(--text-color);
+}
+
+.vs__clear, .vs__open-indicator{
+  fill: var(--text-color) !important
+}
+
+.custom-control-input:checked ~ .custom-control-label::before{
+  background: var(--accent-color) !important;
+  border-color: var(--accent-color) !important;
+}
+
+.custom-control-input:not(:disabled):active ~ .custom-control-label::before {
+  color: #fff;
+  background-color: var(--accent-light) !important;
+  border-color: var(--accent-light) !important;
+}
+
+.custom-control-input:focus ~ .custom-control-label::before {
+  box-shadow: 0 0 0 0.2rem var(--accent-light) !important;
+}
