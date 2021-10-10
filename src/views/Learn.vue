@@ -1,7 +1,8 @@
 <template>
-  <div class="learn pt-5">
-    <div>
-
+  <div class="learn pt-5 text-center">
+    <h1>Обучение и гайды</h1>
+    <div class="mt-4">
+      Чтобы работать в нашем сервисе не нужно быть специалистом в области BigData - интерфейс программы дружелюбен и прост.
     </div>
   </div>
 </template>

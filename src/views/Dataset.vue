@@ -5,7 +5,7 @@
         Основная информация
         <div class="mt-2 row">
           <div class="col-6">
-            <input class="w-100" placeholder="Название поля" ref="agregation-name" type="text">
+            <input ref="agregation-name" class="w-100" placeholder="Название поля" type="text">
           </div>
           <div class="col-6">
             <v-select v-model="selectedField" :options="['Number', 'String', 'Boolean', 'Date']"
@@ -27,7 +27,8 @@
           <div v-for="o in (
               selectedField === 'Number' ? ['+', '-', '*', '/'] :
           selectedField === 'Boolean' ? ['and', 'or'] :
-          selectedField === 'String' ? ['+', '_'] : [])" :key="o" @click="addVariable(o)" class="var-pill mr-2 py-2 px-3 mt-2 cursor-pointer">
+          selectedField === 'String' ? ['+', '_'] : [])" :key="o" class="var-pill mr-2 py-2 px-3 mt-2 cursor-pointer"
+               @click="addVariable(o)">
             {{ o }}
           </div>
         </div>
@@ -54,7 +55,9 @@
               <div class="d-flex">
                 <span class="material-icons-outlined my-auto mr-2">visibility</span>
                 <span
-                    class="my-auto">{{ getActiveDataset.views }} {{ getWordWithCount(getActiveDataset.views, ['просмотр', 'просмотра', 'просмотров']) }}</span>
+                    class="my-auto">{{
+                    getActiveDataset.views
+                  }} {{ getWordWithCount(getActiveDataset.views, ['просмотр', 'просмотра', 'просмотров']) }}</span>
               </div>
               <div class="ml-auto">
                 <div class="text-center">
@@ -65,6 +68,10 @@
                     }} {{ getWordWithCount(getActiveDataset.vote_count, ['оценка', 'оценки', 'оценок']) }}</span>
                 </div>
               </div>
+            </div>
+            <div class="ml-auto d-flex votes mt-3">
+              <span class="material-icons-outlined cursor-pointer mx-1" @click="sendVote(1)" :style="voted === 2 ? 'color: green' : ''">expand_less</span>
+              <span class="material-icons-outlined cursor-pointer mx-1" @click="sendVote(0)" :style="voted === 1 ? 'color: red' : ''">expand_more</span>
             </div>
           </div>
         </div>
@@ -93,15 +100,15 @@
         <div class="col-3 d-flex">
           <div class="light-shadow add-fields w-100 d-flex flex-column text-center">
             <div class="d-flex flex-column">
-              <div class="d-flex flex-column" v-if="agregations.length === 0">
+              <div v-if="agregations.length === 0" class="d-flex flex-column">
                 <span class="title mb-4">Добавленные поля</span>
                 <span class="material-icons-outlined icon mb-3 mt-auto">add_circle_outline</span>
                 <span class="add-desc">Добавьте собственное поле</span>
                 <router-link class="mb-4" to="/learn/add_fields">Как добавлять поля</router-link>
               </div>
               <div v-else>
-                <div class="w-100 px-3 py-2 pipeline" v-for="agr in agregations" :key="agr.name">
-                  {{agr.name}}:{{agr.type}}
+                <div v-for="agr in agregations" :key="agr.name" class="w-100 px-3 py-2 pipeline">
+                  {{ agr.name }}:{{ agr.type }}
                 </div>
               </div>
             </div>
@@ -123,7 +130,7 @@
                 Подтвержаю, что все нужные поля сформированы и данные готовы к обработке на сервере
               </b-form-checkbox>
             </div>
-            <button :disabled="!agree" @click="startTask" class="start-agregation mt-4 w-25 mx-auto">Запустить</button>
+            <button :disabled="!agree" class="start-agregation mt-4 w-25 mx-auto" @click="startTask">Запустить</button>
           </div>
         </div>
       </div>
@@ -146,7 +153,8 @@ export default {
     return {
       agree: false,
       agregations: [],
-      selectedField: "Number"
+      selectedField: "Number",
+      voted: false
     }
   },
   computed: {
@@ -175,9 +183,20 @@ export default {
       this.$bvModal.hide("modal-add-agregate")
     },
     startTask() {
-      axios.post(BACKEND + "/add_task", {user_id: this.getUser.user_id, dataset_id: this.getActiveDataset._id, dataset_name: this.getActiveDataset.name}).then(r => {
+      axios.post(BACKEND + "/add_task", {
+        user_id: this.getUser.user_id,
+        dataset_id: this.getActiveDataset._id,
+        dataset_name: this.getActiveDataset.name
+      }).then(r => {
         this.$router.push("/task/" + r.data)
       })
+    },
+    sendVote(v) {
+      if (!this.voted) {
+        axios.post(BACKEND + "/give_vote", {id: this.getActiveDataset._id, vote: v}).then(() => {
+          this.voted = v + 1
+        })
+      }
     }
   },
   mounted() {
@@ -310,8 +329,8 @@ input {
   padding: 8px 15px;
 }
 
-.agregation-btns{
-  button{
+.agregation-btns {
+  button {
     border: none;
     outline: none;
     border-radius: 10px;
@@ -320,19 +339,25 @@ input {
   }
 }
 
-.cancel-agr{
+.cancel-agr {
   background: var(--red);
   color: white;
 }
 
-.okay{
+.okay {
   background: #165e26;
   color: white;
 }
 
-.pipeline{
+.pipeline {
   background: var(--background-light);
   border-radius: 10px;
   margin-bottom: 10px;
+}
+
+.votes{
+  span{
+    font-size: 36px;
+  }
 }
 </style>
